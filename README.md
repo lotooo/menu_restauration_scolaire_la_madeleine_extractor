@@ -17,6 +17,6 @@ export WEBDAV_USER=toto
 export WEBDAV_PASS=securedpassword
 ```
 
-2. Lancer `.run.sh`
+2. Lancer `./run.sh`
 
 3. Enjoy
