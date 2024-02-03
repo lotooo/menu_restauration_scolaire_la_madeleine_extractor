@@ -8,7 +8,7 @@ Ce script les extrait grâce à `BeautifulSoup`, le parse grâce à `pdfplubmer`
 
 ## Comment l'utiliser ?
 
-Créer un fichier `.env` avec les infos de connections au caldav :
+1. Créer un fichier `.env` avec les infos de connections au caldav :
 
 ```
 export WEBDAV_URL=framagenda.org/remote.php/dav/calendars/toto/xxxx/
@@ -16,3 +16,7 @@ export WEBDAV_CAL=MenuCantineLaMadeleine
 export WEBDAV_USER=toto
 export WEBDAV_PASS=securedpassword
 ```
+
+2. Lancer `.run.sh`
+
+3. Enjoy
