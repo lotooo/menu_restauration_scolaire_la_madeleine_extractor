@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import caldav
 import dateparser
+from dateparser.search import search_dates
 import os
 import requests
 import pdfplumber
@@ -31,9 +32,22 @@ for link in soup.find_all('a'):
     if not 'pdf' in target or 'tarif' in target or 'node' in target:
       continue
     filename = target.split('/')[-1]
+    filename = filename.replace('.pdf','')
     f = NamedTemporaryFile(delete=True)
     print(f"Downloading {target} to {f.name}")
-    start = dateparser.parse('-'.join(filename.split('-')[0:2]))
+    splitted_filename = filename.split('-')
+    if splitted_filename[1] == 'au':
+      # This is the same month
+      # Let's clean that
+      date_to_parse = ' '.join([splitted_filename[0], splitted_filename[3], splitted_filename[4]])
+    else:
+      date_to_parse = '-'.join(splitted_filename[0:2])
+    start = dateparser.parse(date_to_parse)
+    if not start:
+      print(f"ERROR: Impossible to parse the date: {date_to_parse}")
+      s = search_dates(date_to_parse, languages=['fr'])
+      print(s)
+      continue
     if start.weekday() != 0:
       start = start - timedelta(days=start.weekday())
     r = requests.get(target)
@@ -51,7 +65,7 @@ for link in soup.find_all('a'):
       week_menu = { d: m for d,m in enumerate(line[1:]) }
       for d,m in enumerate(line[1:]):
         day = week_start + timedelta(days=d)
-        formated_day_menu = m.replace('\n', ' - ')
+        formated_day_menu = m.replace('\n', ' - ').replace('BIO','').replace('bio','').replace('*','')
         event_id = str(day.date())
         event_start = day.replace(hour=11, minute=30)
         event_end = day.replace(hour=13, minute=30)
